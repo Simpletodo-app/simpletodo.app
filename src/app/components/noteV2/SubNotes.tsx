@@ -61,7 +61,7 @@ const SubNotes = () => {
         </Text>
       </TitleSeparator>
       <Flex justify="end">
-        <Button size="1" onClick={toggleExpandAllSubNotes}>
+        <Button size="1" variant="ghost" onClick={toggleExpandAllSubNotes}>
           {isAllSubNotesExpanded ? 'Close' : 'Expand'} all
         </Button>
       </Flex>
