@@ -76,7 +76,7 @@ const SearchInput = ({ open, onOpenChange }: SearchInputProps) => {
           shouldFilter={false}
         >
           <CommandInput
-            placeholder="Type a command or search..."
+            placeholder="Search..."
             value={search}
             onValueChange={handleOnSearch}
           />
