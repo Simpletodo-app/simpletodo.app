@@ -24,6 +24,10 @@
 
 .layout.note-full-screen {
   grid-template-columns: 0 0 1fr;
+  .note-container {
+    // Remove the gap from the other columns in the layout grid
+    margin-left: -20px;
+  }
 }
 
 .projects-view-list-item {
@@ -236,7 +240,10 @@
 }
 
 .note-container {
+  // Remove the gap from the layout grid
+  margin-left: -10px;
   container: noteContainer / inline-size;
+  height: 100vh;
 }
 
 .text-formatting-group {

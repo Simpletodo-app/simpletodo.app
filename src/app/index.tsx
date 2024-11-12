@@ -59,7 +59,7 @@ const App = () => {
                 {projectsExpanded && <ProjectsView />}
                 <Separator orientation="vertical" size="4" />
               </Flex>
-              <NotesList />
+              <NotesList onToggleFullScreen={onToggleFullScreen} />
             </>
           ) : (
             // Dummy divs to keep the layout consistent which helps with transition css smoothly

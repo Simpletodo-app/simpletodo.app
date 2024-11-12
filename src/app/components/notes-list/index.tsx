@@ -9,30 +9,26 @@ import {
   ScrollArea,
   Heading,
 } from '@radix-ui/themes'
-import { Pencil2Icon } from '@radix-ui/react-icons'
 import NoteListItem from './note-list-item'
-import { createEmptyNote, fetchNotes, notes$ } from '../../store/notesV2'
+import { fetchNotes, notes$ } from '../../store/notesV2'
 
-import {
-  getProjectFromId,
-  isTrashNotesProjectId,
-  projects$,
-} from '../../store/projects'
+import { getProjectFromId, projects$ } from '../../store/projects'
 import { useUserData } from '../user-data-provider'
+import { SideNavIcon } from '../noteV2/SideNavIcon'
+import NewNoteListIconButton from './new-note-list-icon-button'
 
-const NotesList = () => {
+type NotesListProps = {
+  onToggleFullScreen: () => void
+}
+
+const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
   const { lastOpenedNoteId, lastOpenedProjectId } = useUserData()
-  const canCreateNewNote = useSelector(() => notes$.canCreateNewNote.get())
   const currentProjectTitle = useSelector(() => {
     const projectId = projects$.selectedProjectId.get()
     if (projectId) {
       return getProjectFromId(projectId).title.get()
     }
   })
-
-  const isTrashNotesSelected = useSelector(() =>
-    isTrashNotesProjectId(projects$.selectedProjectId.get())
-  )
 
   useObserve(() => {
     const selectedProjectId = projects$.selectedProjectId.get()
@@ -50,17 +46,14 @@ const NotesList = () => {
           <Heading weight="medium" size="3">
             {currentProjectTitle}
           </Heading>
-          {!isTrashNotesSelected && (
-            <Tooltip content="New todo list (⌘+N)">
-              <IconButton
-                variant="ghost"
-                onClick={createEmptyNote}
-                disabled={!canCreateNewNote}
-              >
-                <Pencil2Icon width="18" height="18" />
+          <Flex gap="4">
+            <NewNoteListIconButton />
+            <Tooltip content="Hide todo lists">
+              <IconButton variant="ghost" onClick={onToggleFullScreen}>
+                <SideNavIcon />
               </IconButton>
             </Tooltip>
-          )}
+          </Flex>
         </Flex>
 
         <ScrollArea
