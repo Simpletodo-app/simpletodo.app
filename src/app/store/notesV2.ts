@@ -6,7 +6,12 @@ import {
   observe,
 } from '@legendapp/state'
 import { ID, IDField, Note, SearchResult } from '../../common/types'
-import { getNewModelId, isNewModelId, toIdAndIndexMap } from './utils'
+import {
+  getNewModelId,
+  isNewModelId,
+  organizeNotesByParent,
+  toIdAndIndexMap,
+} from './utils'
 import debounce from 'lodash/debounce'
 import { UNTITLED_NOTE_TITLE } from '../../common/config'
 import pick from 'lodash/pick'
@@ -34,11 +39,6 @@ const FIELDS_TO_BE_FETCHED: Array<keyof NoteListItem> = [
   'hasSubNotes',
   'parentNoteId',
 ]
-
-export type SubNoteListItem = Pick<
-  Note,
-  'id' | 'title' | 'htmlContent' | 'createdAt'
->
 
 export type SearchResultItem = SearchResult & {
   projectTitle?: string
@@ -270,7 +270,7 @@ export const fetchNotes = async (
         deleted: isTrashNotesProjectId(projectId),
       }
     )
-    notes$.notes.set(notes)
+    notes$.notes.set(organizeNotesByParent(notes))
 
     // after fetching notes, select the passed
     // default selected note id or use the first note
