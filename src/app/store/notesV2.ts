@@ -139,7 +139,9 @@ export const selectNoteItem = (id: ID, isASubNote?: boolean) => {
   notes$.selectedNoteId.set(id)
   // in case you are selecting a sub note when the sub notes are not visible
   // we show the sub note in the list view
-  notes$.viewSubNotes.set(isASubNote ? id : undefined)
+  if (isASubNote) {
+    notes$.viewSubNotes.set(id)
+  }
 
   const fn = async () => {
     await window.electron.store.set('lastOpenedNoteId', id)
