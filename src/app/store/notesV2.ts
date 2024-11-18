@@ -49,7 +49,7 @@ export type SearchResultItem = SearchResult & {
 type NotesStore = {
   notes: NoteListItem[]
   isFetching: boolean
-  lastNoteId: ObservableComputed<IDField['id'] | undefined>
+  firstNoteId: IDField['id'] | undefined
   _notesIdIndexMap: ObservableComputed<Map<IDField['id'], Index>>
 
   selectedNoteId: ID
@@ -74,10 +74,7 @@ type NotesStore = {
 export const notes$: ObservableObject<NotesStore> = observable({
   notes: [] as NoteListItem[],
   isFetching: false,
-  lastNoteId: computed(() => {
-    const length = notes$.notes.length
-    return notes$.notes[length - 1]?.id.get()
-  }),
+  firstNoteId: undefined,
   _notesIdIndexMap: computed(() => {
     return toIdAndIndexMap(notes$.notes.get())
   }),
@@ -130,6 +127,10 @@ observe(notes$.selectedNoteId, ({ value: id }) => {
   } else {
     fetchNote(id)
   }
+})
+
+observe(notes$.notes, ({ value: notes }) => {
+  notes$.firstNoteId.set(notes[0]?.id)
 })
 
 /**

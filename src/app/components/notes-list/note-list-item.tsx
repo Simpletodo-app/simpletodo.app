@@ -26,7 +26,7 @@ type NoteListItemProps = {
 const NoteListItem = ({ note$ }: NoteListItemProps) => {
   const [open, setOpen] = useState(false)
   const id = note$.id.peek()
-  const hideSeparator = notes$.lastNoteId.get() === id
+  const hideSeparator = notes$.firstNoteId.get() === id
   const isActive = notes$.selectedNoteId.get() === id
   const belongsToAProject = !!note$.projectId.peek()
   const selectedProjectId = projects$.selectedProjectId.get()
@@ -43,7 +43,9 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
 
   return (
     <>
-      <div className={cn(hideSubNote && 'hidden')}>
+      <div className={cn(hideSubNote && 'hidden', isSubNote && 'pl-4')}>
+        {/* TODO(theo): Delete this and use css to handle this */}
+        {!hideSeparator && !isSubNote && <Separator size="4" />}
         <ItemContextMenu
           onDelete={() =>
             isTrashNotesSelected ? setOpen(true) : deleteNote(id)
@@ -58,7 +60,8 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
           <Box
             className={cn(
               'notes-list-item',
-              'p-2 mb-2 rounded-lg w-full',
+              'p-2 rounded-lg w-full',
+              !isSubNote && 'my-2',
               isActive && 'active'
             )}
             asChild
@@ -77,7 +80,8 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
                   <Text size="1" color="gray">
                     {format(new Date(note$.createdAt.peek()), 'MMM d, yyyy')}
                   </Text>
-                  {belongsToAProject &&
+                  {!isSubNote &&
+                    belongsToAProject &&
                     (isAllNotesSelected || isTrashNotesSelected) && (
                       <Badge color="gray" variant="soft" size="1">
                         {project?.title}
@@ -93,8 +97,6 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
             </button>
           </Box>
         </ItemContextMenu>
-        {/* TODO(theo): Delete this and use css to handle this */}
-        {!hideSeparator && <Separator size="4" />}
       </div>
 
       <ConfirmDelete
