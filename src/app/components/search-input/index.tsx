@@ -62,8 +62,8 @@ const SearchInput = ({ open, onOpenChange }: SearchInputProps) => {
     await updateUserData('recentSearches', newRecentSearches)
   }
 
-  const handleSelectedSearch = (id: ID) => {
-    selectNoteItem(id)
+  const handleSelectedSearch = (id: ID, isSubNote: boolean) => {
+    selectNoteItem(id, isSubNote)
     onOpenChange(false)
   }
 
@@ -119,7 +119,7 @@ const SearchInput = ({ open, onOpenChange }: SearchInputProps) => {
                     key={result.id}
                     className="flex-col"
                     onSelect={() => {
-                      handleSelectedSearch(result.id)
+                      handleSelectedSearch(result.id, !!result.parentNoteId)
                     }}
                   >
                     <Text

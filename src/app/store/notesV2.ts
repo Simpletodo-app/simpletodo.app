@@ -24,7 +24,7 @@ import {
 
 export type NoteListItem = Pick<
   Note,
-  'id' | 'title' | 'projectId' | 'createdAt' | 'hasSubNotes'
+  'id' | 'title' | 'projectId' | 'createdAt' | 'hasSubNotes' | 'parentNoteId'
 >
 const FIELDS_TO_BE_FETCHED: Array<keyof NoteListItem> = [
   'id',
@@ -32,6 +32,7 @@ const FIELDS_TO_BE_FETCHED: Array<keyof NoteListItem> = [
   'projectId',
   'createdAt',
   'hasSubNotes',
+  'parentNoteId',
 ]
 
 export type SubNoteListItem = Pick<
@@ -60,9 +61,14 @@ type NotesStore = {
 
   canCreateNewNote: ObservableComputed<boolean>
 
-  selectedNoteSubNotes: Array<SubNoteListItem>
-
   searchResults: SearchResultItem[]
+
+  /**
+   * If `all` is passed, show all sub notes
+   * If an ID is passed, show only that sub note
+   * If undefined, show no sub notes
+   */
+  viewSubNotes?: 'all' | ID | undefined
 }
 
 export const notes$: ObservableObject<NotesStore> = observable({
@@ -95,11 +101,8 @@ export const notes$: ObservableObject<NotesStore> = observable({
     return !hasEmptyNote
   }),
 
-  selectedNoteSubNotes: [] as Note[],
-  openSubNoteById: undefined,
-  toggleExpandAllSubNotes: false,
-
   searchResults: [] as SearchResultItem[],
+  viewSubNotes: undefined,
 })
 
 const sanitizeProjectId = (projectId: ID | undefined) => {
@@ -132,8 +135,11 @@ observe(notes$.selectedNoteId, ({ value: id }) => {
 /**
  * UI handlers
  */
-export const selectNoteItem = (id: ID) => {
+export const selectNoteItem = (id: ID, isASubNote?: boolean) => {
   notes$.selectedNoteId.set(id)
+  // in case you are selecting a sub note when the sub notes are not visible
+  // we show the sub note in the list view
+  notes$.viewSubNotes.set(isASubNote ? id : undefined)
 
   const fn = async () => {
     await window.electron.store.set('lastOpenedNoteId', id)
@@ -169,6 +175,20 @@ export const createEmptyNote = async () => {
   notes$.notes.unshift(getDummyEmptyNote(id) as NoteListItem)
 
   selectNoteItem(id)
+}
+
+export const toggleViewSubNotes = (subNoteId?: ID) => {
+  if (subNoteId) {
+    notes$.viewSubNotes.set(subNoteId)
+    return
+  }
+
+  if (notes$.viewSubNotes.peek() === 'all') {
+    notes$.viewSubNotes.set(undefined)
+    return
+  } else {
+    notes$.viewSubNotes.set('all')
+  }
 }
 /**
  * end UI handlers
@@ -339,38 +359,6 @@ export const fetchNote = async (id: ID) => {
   try {
     const note = await window.electron.services.notes.getById(id)
     notes$.activeNote.set(note)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export const fetchSubNotes = async (id: ID) => {
-  if (isNewModelId(id)) {
-    notes$.selectedNoteSubNotes.set([])
-    return
-  }
-  console.log('fetching sub notes for id:', id)
-  try {
-    const notes = await window.electron.services.notes.getSubNotes(id, [
-      'id',
-      'htmlContent',
-      'title',
-      'createdAt',
-    ])
-    notes$.selectedNoteSubNotes.set(notes)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export const deleteSubNote = async (id: ID) => {
-  console.log('deleting sub note for id:', id)
-  try {
-    await window.electron.services.notes.deleteById(id)
-    const index = notes$.selectedNoteSubNotes
-      .peek()
-      .findIndex((item) => item.id === id)
-    notes$.selectedNoteSubNotes.splice(index, 1)
   } catch (err) {
     console.error(err)
   }

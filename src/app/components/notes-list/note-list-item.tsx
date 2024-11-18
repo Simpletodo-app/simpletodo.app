@@ -32,14 +32,18 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
   const selectedProjectId = projects$.selectedProjectId.get()
   const isAllNotesSelected = isAllNotesProjectId(selectedProjectId)
   const isTrashNotesSelected = isTrashNotesProjectId(selectedProjectId)
+  const isSubNote = !!note$.parentNoteId.peek()
+  const viewingSubNotes = notes$.viewSubNotes.get()
 
   const project = projects$.projects
     .get()
     .find((item) => item.id === note$.projectId.peek())
 
+  const hideSubNote = isSubNote && !['all', id].includes(viewingSubNotes)
+
   return (
     <>
-      <div>
+      <div className={cn(hideSubNote && 'hidden')}>
         <ItemContextMenu
           onDelete={() =>
             isTrashNotesSelected ? setOpen(true) : deleteNote(id)
