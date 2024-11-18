@@ -9,7 +9,6 @@ import {
   debouncedCreateOrEditNote,
   notes$,
 } from '../../store/notesV2'
-import SubNotes from './SubNotes'
 import { isTrashNotesProjectId, projects$ } from '../../store/projects'
 import NoteBar from './NoteBar'
 
@@ -37,32 +36,31 @@ const NoteV2 = ({ onToggleFullScreen, fullScreen }: NoteV2Props) => {
     }
   }, [])
 
-  if (!selectedNoteId) {
-    return <EmptyList />
-  }
-
   return (
     <div className="note-container">
       <NoteBar
         onToggleFullScreen={onToggleFullScreen}
         fullScreen={fullScreen}
       />
-      <ScrollArea>
-        <Box py="4" pr="2" className="note-layout">
-          <TextEditor
-            noteId={note?.id}
-            content={note?.htmlContent || ''}
-            onChange={(v) => {
-              if (!isEmpty(v) && note.htmlContent !== v) {
-                debouncedCreateOrEditNote(note?.id, v)
-              }
-            }}
-            editable={!isTrashNotesSelected}
-          />
 
-          <SubNotes />
-        </Box>
-      </ScrollArea>
+      {!selectedNoteId && <EmptyList />}
+
+      {selectedNoteId && (
+        <ScrollArea>
+          <Box py="4" pb="9" pr="2" className="note-layout">
+            <TextEditor
+              noteId={note?.id}
+              content={note?.htmlContent || ''}
+              onChange={(v) => {
+                if (!isEmpty(v) && note.htmlContent !== v) {
+                  debouncedCreateOrEditNote(note?.id, v)
+                }
+              }}
+              editable={!isTrashNotesSelected}
+            />
+          </Box>
+        </ScrollArea>
+      )}
     </div>
   )
 }

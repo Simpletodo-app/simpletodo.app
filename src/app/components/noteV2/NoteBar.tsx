@@ -60,6 +60,7 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
               onClick={() => {
                 isTrashNotesSelected ? setOpen(true) : deleteNote(id)
               }}
+              disabled={!id}
             >
               <TrashIcon width="18" height="18" />
             </IconButton>

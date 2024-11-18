@@ -61,10 +61,6 @@ type NotesStore = {
   canCreateNewNote: ObservableComputed<boolean>
 
   selectedNoteSubNotes: Array<SubNoteListItem>
-  // open sub note by id when the note is loaded and sub notes are fetched
-  // see SubNotes.tsx for usage
-  openSubNoteById: ID | undefined
-  toggleExpandAllSubNotes?: boolean
 
   searchResults: SearchResultItem[]
 }
@@ -136,9 +132,8 @@ observe(notes$.selectedNoteId, ({ value: id }) => {
 /**
  * UI handlers
  */
-export const selectNoteItem = (id: ID, openSubNoteIdOnLoad?: ID) => {
+export const selectNoteItem = (id: ID) => {
   notes$.selectedNoteId.set(id)
-  notes$.openSubNoteById.set(openSubNoteIdOnLoad)
 
   const fn = async () => {
     await window.electron.store.set('lastOpenedNoteId', id)
@@ -158,10 +153,6 @@ export const getSelectedNoteIndex = () => {
   const selectedNoteId = notes$.selectedNoteId.get()
   const map = notes$._notesIdIndexMap.get()
   return map.get(selectedNoteId)
-}
-
-export const toggleExpandAllSubNotes = () => {
-  notes$.toggleExpandAllSubNotes.set(!notes$.toggleExpandAllSubNotes.peek())
 }
 
 export const createEmptyNote = async () => {

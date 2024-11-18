@@ -17,12 +17,14 @@ export const createSubNoteFlow = (noteId: ID) => {
 
   const createSubNoteTransaction = db.transaction((noteId: ID) => {
     const note = notesService.getById(noteId)
+    const subNotesCount = notesService.getSubNotesCount(noteId)
     if (!note) {
       return
     }
 
     const { checkedHtmlContent, uncheckedHtmlContent } = extractItems(
-      note.htmlContent
+      note.htmlContent,
+      subNotesCount
     )
 
     // create a new note

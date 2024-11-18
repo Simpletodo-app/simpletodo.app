@@ -29,6 +29,7 @@ export const parseHtmlToNoteContent = (htmlContent: string) => {
   }
 }
 
+// TODO: if it's a task with sub tasks and none of the sub tasks are checked, don't enable the button
 export const hasCompletedTodos = (htmlContent: string): boolean => {
   const $ = cheerio.load(htmlContent)
   return $('input[type=checkbox]:checked').length > 0
@@ -40,7 +41,7 @@ export const hasCompletedTodos = (htmlContent: string): boolean => {
  * @param htmlContent
  * @returns
  */
-export const extractItems = (htmlContent: string) => {
+export const extractItems = (htmlContent: string, subNotesCount = 0) => {
   const $ = cheerio.load(htmlContent)
 
   const processList = (
@@ -93,11 +94,12 @@ export const extractItems = (htmlContent: string) => {
 
   const rootList = $('ul[data-type="taskList"]').first()
   const title = $('h1').first().clone()
+  const checkedContentTitle = title.clone()
 
   // the div is needed to wrap the content when calling
   // html() so that it returns the innerHTML
   const checkedHtmlContent = $('<div></div>')
-    // we don't want to append the title for a sub note since it will be the same as the parent note
+    .append(checkedContentTitle.append(` - ${subNotesCount + 1}`))
     .append(processList(rootList, true))
     .html()
   const uncheckedHtmlContent = $('<div></div>')
