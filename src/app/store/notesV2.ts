@@ -302,10 +302,16 @@ export const fetchNotes = async (
 export const deleteNote = async (id: ID, permanently?: boolean) => {
   console.log('deleting note for id:', id)
   try {
-    const note = notes$.notes.peek().find((note) => note.id === id)
+    const notes = notes$.notes.peek()
+    const note = notes.find((note) => note.id === id)
     await window.electron.services.notes.deleteById(id, permanently)
     const index = getNoteIdIndex(id)
-    notes$.notes.splice(index, 1)
+
+    const subNotesCount = notes.filter(
+      (note) => note.parentNoteId === id
+    ).length
+
+    notes$.notes.splice(index, 1 + subNotesCount)
 
     if (notes$.selectedNoteId.get() === id) {
       selectNoteItem(notes$.notes[0]?.id.get())
@@ -320,12 +326,21 @@ export const deleteNote = async (id: ID, permanently?: boolean) => {
 export const restoreNote = async (id: ID) => {
   console.log('restoring note for id:', id)
   try {
-    const note = notes$.notes.peek().find((note) => note.id === id)
-    await window.electron.services.notes.update(id, { deleted: 0 })
+    const notes = notes$.notes.peek()
+    const note = notes.find((note) => note.id === id)
+    await window.electron.services.notes.update(
+      id,
+      { deleted: 0 },
+      'OR parentNoteId = @id'
+    )
     const index = getNoteIdIndex(id)
 
-    // remove from trash notes list
-    notes$.notes.splice(index, 1)
+    const subNotesCount = notes.filter(
+      (note) => note.parentNoteId === id
+    ).length
+
+    // remove from trash notes list and sub notes
+    notes$.notes.splice(index, 1 + subNotesCount)
 
     if (notes$.selectedNoteId.get() === id) {
       selectNoteItem(notes$.notes[0]?.id.get())

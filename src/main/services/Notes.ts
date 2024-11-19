@@ -119,15 +119,29 @@ export default class NotesService extends DBService {
     return this.getById(id)
   }
 
+  /**
+   * Soft delete a note and all its sub notes if any
+   * @param id
+   * @param permanently
+   * @returns
+   */
   deleteById(id: ID, permanently = false) {
     if (permanently) {
       return this.permanentlyDeleteById(id)
     }
-    return this.update(id, { deleted: 1 })
+
+    return this.update(id, { deleted: 1 }, 'OR parentNoteId = @id')
   }
 
+  /**
+   * Permanently delete a note and all its sub notes
+   * @param id
+   * @returns
+   */
   permanentlyDeleteById(id: ID) {
-    const stm = this.getDB().prepare('DELETE FROM notes WHERE id = @id')
+    const stm = this.getDB().prepare(
+      'DELETE FROM notes WHERE id = @id OR parentNoteId = @id'
+    )
     return stm.run({ id })
   }
 
