@@ -271,6 +271,7 @@ export const fetchNotes = async (
         deleted: isTrashNotesProjectId(projectId),
       }
     )
+
     notes$.notes.set(organizeNotesByParent(notes))
 
     // after fetching notes, select the passed

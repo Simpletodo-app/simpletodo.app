@@ -7,9 +7,10 @@ describe('organizeNotesByParent', () => {
     const notes = [
       { id: 1, parentNoteId: null },
       { id: 2, parentNoteId: null },
-      { id: 3, parentNoteId: 1 },
+      { id: 3, parentNoteId: 71 },
       { id: 4, parentNoteId: 1 },
-      { id: 5, parentNoteId: 2 },
+      { id: 5, parentNoteId: 1 },
+      { id: 6, parentNoteId: 2 },
     ] as Note[]
 
     const result = organizeNotesByParent(notes)
@@ -21,11 +22,11 @@ describe('organizeNotesByParent', () => {
           "parentNoteId": null,
         },
         {
-          "id": 3,
+          "id": 4,
           "parentNoteId": 1,
         },
         {
-          "id": 4,
+          "id": 5,
           "parentNoteId": 1,
         },
         {
@@ -33,8 +34,12 @@ describe('organizeNotesByParent', () => {
           "parentNoteId": null,
         },
         {
-          "id": 5,
+          "id": 6,
           "parentNoteId": 2,
+        },
+        {
+          "id": 3,
+          "parentNoteId": 71,
         },
       ]
     `)
