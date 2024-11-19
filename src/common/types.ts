@@ -57,3 +57,13 @@ export type SearchResult = Pick<
   Note,
   'id' | 'title' | 'textContent' | 'projectId' | 'parentNoteId'
 >
+
+export type NoteListItem = Pick<
+  Note,
+  'id' | 'title' | 'projectId' | 'createdAt' | 'hasSubNotes' | 'parentNoteId'
+> & {
+  /**
+   * if this note has a parent id but the note is not found in the list
+   */
+  hasNoExistingParentNote?: boolean
+}

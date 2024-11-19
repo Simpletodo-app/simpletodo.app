@@ -5,7 +5,13 @@ import {
   ObservableComputed,
   observe,
 } from '@legendapp/state'
-import { ID, IDField, Note, SearchResult } from '../../common/types'
+import {
+  ID,
+  IDField,
+  Note,
+  NoteListItem,
+  SearchResult,
+} from '../../common/types'
 import {
   getNewModelId,
   isNewModelId,
@@ -27,10 +33,6 @@ import {
   highlightTitle,
 } from '../components/search-input/utils'
 
-export type NoteListItem = Pick<
-  Note,
-  'id' | 'title' | 'projectId' | 'createdAt' | 'hasSubNotes' | 'parentNoteId'
->
 const FIELDS_TO_BE_FETCHED: Array<keyof NoteListItem> = [
   'id',
   'title',

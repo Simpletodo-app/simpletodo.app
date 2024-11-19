@@ -38,6 +38,7 @@ describe('organizeNotesByParent', () => {
           "parentNoteId": 2,
         },
         {
+          "hasNoExistingParentNote": true,
           "id": 3,
           "parentNoteId": 71,
         },

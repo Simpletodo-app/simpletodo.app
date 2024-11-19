@@ -1,4 +1,4 @@
-import { ID, IDField, Note } from '../../common/types'
+import { ID, IDField, Note, NoteListItem } from '../../common/types'
 
 export const toIdAndIndexMap = <T extends IDField>(items: Array<T>) => {
   const map = new Map<ID, number>()
@@ -13,7 +13,7 @@ export const getNewModelId = () => --newModelIdCount
 
 export const isNewModelId = (id: ID) => id < 0
 
-export const organizeNotesByParent = (notes: Note[]) => {
+export const organizeNotesByParent = (notes: NoteListItem[]) => {
   // Separate notes into parentNotes and subNotes
   const parentNotes = notes
     .filter((note) => !note.parentNoteId)
@@ -22,7 +22,7 @@ export const organizeNotesByParent = (notes: Note[]) => {
   const subNotes = notes.filter((note) => note.parentNoteId)
 
   // Create a map for faster lookup of parent notes
-  const parentMap = new Map<ID, Note & { subNotes: Note[] }>()
+  const parentMap = new Map<ID, NoteListItem & { subNotes: NoteListItem[] }>()
   parentNotes.forEach((note) => parentMap.set(note.id, note))
 
   // Add subNotes to their respective parent notes
@@ -40,8 +40,8 @@ export const organizeNotesByParent = (notes: Note[]) => {
       acc.push(rest, ...subNotes)
     } else if (!parentMap.has(note.parentNoteId)) {
       // Include notes with a parentNoteId that does not exist in the list
-      acc.push(note)
+      acc.push({ ...note, hasNoExistingParentNote: true })
     }
     return acc
-  }, [] as Note[])
+  }, [] as NoteListItem[])
 }

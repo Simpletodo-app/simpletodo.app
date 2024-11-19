@@ -6,9 +6,9 @@ import {
   deleteNote,
   notes$,
   selectNoteItem,
-  NoteListItem as NoteListItemType,
   restoreNote,
 } from '../../store/notesV2'
+import { NoteListItem as NoteListItemType } from '../../../common/types'
 import { ObservableObject } from '@legendapp/state'
 import { format } from 'date-fns'
 import ItemContextMenu from './item-context-menu'
@@ -41,9 +41,22 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
 
   const hideSubNote = isSubNote && !['all', id].includes(viewingSubNotes)
 
+  const noExistingParentNote = note$.hasNoExistingParentNote.peek()
+
+  const showProjectBadge =
+    (!isSubNote || noExistingParentNote) &&
+    belongsToAProject &&
+    (isAllNotesSelected || isTrashNotesSelected)
+
   return (
     <>
-      <div className={cn(hideSubNote && 'hidden', isSubNote && 'pl-4')}>
+      <div
+        className={
+          noExistingParentNote
+            ? ''
+            : cn(hideSubNote && 'hidden', isSubNote && 'pl-4')
+        }
+      >
         {/* TODO(theo): Delete this and use css to handle this */}
         {!hideSeparator && !isSubNote && <Separator size="4" />}
         <ItemContextMenu
@@ -80,13 +93,11 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
                   <Text size="1" color="gray">
                     {format(new Date(note$.createdAt.peek()), 'MMM d, yyyy')}
                   </Text>
-                  {!isSubNote &&
-                    belongsToAProject &&
-                    (isAllNotesSelected || isTrashNotesSelected) && (
-                      <Badge color="gray" variant="soft" size="1">
-                        {project?.title}
-                      </Badge>
-                    )}
+                  {showProjectBadge && (
+                    <Badge color="gray" variant="soft" size="1">
+                      {project?.title}
+                    </Badge>
+                  )}
                 </Flex>
                 <div>
                   {Boolean(note$.hasSubNotes.peek()) && (
