@@ -342,12 +342,12 @@ export const createSubNote = async (noteId: ID) => {
   console.log('creating sub note for id:', noteId)
   const index = getNoteIdIndex(noteId)
   try {
-    const newNote = await window.electron.services.notes.triggerSubNoteCreation(
-      noteId
-    )
+    const { newNote, oldNote } =
+      await window.electron.services.notes.triggerSubNoteCreation(noteId)
 
     // update notes list to use the new note in place of the old note
     notes$.notes[index].set(newNote)
+    notes$.notes.splice(index + 1, 0, oldNote)
     selectNoteItem(newNote.id)
   } catch (err) {
     console.error(err)

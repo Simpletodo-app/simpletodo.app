@@ -138,7 +138,7 @@ export default class NotesService extends DBService {
     return stmt.all({ query: `%${query}%` }) as Note[]
   }
 
-  triggerSubNoteCreation(id: ID): Note {
+  triggerSubNoteCreation(id: ID) {
     return createSubNoteFlow(id)
   }
 }
