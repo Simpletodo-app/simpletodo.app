@@ -24,6 +24,7 @@ const createWindow = () => {
     minHeight: 500,
     minWidth: 550,
     titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 10, y: 10 },
     // expose window controlls in Windows/Linux
     ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
 

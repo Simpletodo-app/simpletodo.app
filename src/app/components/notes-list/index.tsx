@@ -42,12 +42,18 @@ const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
 
   return (
     <Flex gap="2" justify="between" height="100%" wrap="nowrap">
-      <Flex direction="column" className="min-w-[290px]" py="4" gap="2">
-        <Flex justify="between">
-          <Heading weight="medium" size="3">
+      <Flex
+        direction="column"
+        className="min-w-[290px] w-[290px]"
+        pt="2"
+        py="4"
+        gap="2"
+      >
+        <Flex>
+          <Heading weight="medium" size="3" className="app-region flex-1">
             {currentProjectTitle}
           </Heading>
-          <Flex gap="4">
+          <Flex gap="4" align="center">
             <Tooltip content="Toggle past completed tasks">
               <IconButton variant="ghost" onClick={() => toggleViewSubNotes()}>
                 <CardStackIcon width="18" height="18" />
@@ -75,7 +81,6 @@ const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
           </Flex>
         </ScrollArea>
       </Flex>
-      <Separator orientation="vertical" size="4" />
     </Flex>
   )
 }

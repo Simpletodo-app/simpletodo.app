@@ -31,8 +31,8 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
   const isSubNote = !note?.parentNoteId
 
   return (
-    <Flex p="4" direction="column" style={{ background: 'var(--accent-2)' }}>
-      <Flex justify="between">
+    <Flex className="pl-20" pt="2" pr="4" direction="column">
+      <Flex>
         <Flex gap="4" style={{ visibility: fullScreen ? 'unset' : 'hidden' }}>
           <NewNoteListIconButton />
           <Tooltip content="Show todo lists">
@@ -42,11 +42,12 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
           </Tooltip>
         </Flex>
 
+        <div className="flex-1 app-region" />
+
         <Flex gap="4">
           <Tooltip content="This will move completed tasks to a past list">
             <IconButton
               variant="ghost"
-              size="2"
               onClick={() => {
                 createSubNote(note?.id)
               }}
@@ -58,7 +59,6 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
           <Tooltip content="Delete">
             <IconButton
               variant="ghost"
-              size="2"
               onClick={() => {
                 isTrashNotesSelected ? setOpen(true) : deleteNote(id)
               }}
@@ -72,7 +72,6 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
             <Tooltip content="Restore">
               <IconButton
                 variant="ghost"
-                size="2"
                 onClick={() => {
                   if (!isTrashNotesSelected) return
                   restoreNote(note.id)
