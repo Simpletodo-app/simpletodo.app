@@ -13,12 +13,7 @@ export const ToolbarButton = (props: ToolbarButtonProps) => {
 
   return (
     <Tooltip content={tooltip}>
-      <IconButton
-        {...rest}
-        size="1"
-        variant="ghost"
-        className="link-toolbar-button"
-      >
+      <IconButton {...rest} size="1" variant="ghost">
         <Icon />
       </IconButton>
     </Tooltip>
