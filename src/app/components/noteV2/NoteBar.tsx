@@ -1,7 +1,7 @@
 import { Flex, IconButton, Tooltip } from '@radix-ui/themes'
 import React from 'react'
 import { SideNavIcon } from './SideNavIcon'
-import { CardStackIcon, ResetIcon, TrashIcon } from '@radix-ui/react-icons'
+import { CardStackPlusIcon, ResetIcon, TrashIcon } from '@radix-ui/react-icons'
 import NewNoteListIconButton from '../notes-list/new-note-list-icon-button'
 import { useSelector } from '@legendapp/state/react'
 import { isTrashNotesProjectId, projects$ } from '../../store/projects'
@@ -52,7 +52,7 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
               }}
               disabled={isSubNote || !hasCompletedTodo || isTrashNotesSelected}
             >
-              <CardStackIcon width="18" height="18" />
+              <CardStackPlusIcon width="18" height="18" />
             </IconButton>
           </Tooltip>
           <Tooltip content="Delete">

@@ -21,36 +21,42 @@ const SideNav = ({
       gap="2"
       justify="between"
       className="min-h-screen"
-      pl="2"
+      pl="3"
+      px="2"
+      pt="6"
+      pb="4"
       wrap="nowrap"
+      style={{ background: 'var(--gray-1)' }}
     >
-      <Flex justify="between" align="center" direction="column">
-        <Flex direction="column" gap="5" pt="3">
-          <img
-            src={logo}
-            alt="Simpletodo app Logo"
-            className="w-[44px] h-[44px]"
-          />
-          <Tooltip content={`${currentProjectTitle} notes`}>
-            <IconButton variant="ghost" onClick={onToggleExpansion}>
-              <BackpackIcon width="18" height="18" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip content="Search notes (Ctrl or ⌘ + K)">
-            <IconButton variant="ghost" onClick={openSearch}>
-              <MagnifyingGlassIcon width="18" height="18" />
-            </IconButton>
-          </Tooltip>
-        </Flex>
-        <Flex direction="column" gap="5" py="2" pb="3">
-          {/* <Tooltip content="Settings">
-            <IconButton variant="ghost">
-              <GearIcon width="18" height="18" />
-            </IconButton>
-          </Tooltip> */}
-          <Tooltip content="Theme">
-            <ThemeToggle />
-          </Tooltip>
+      <Flex align="center" direction="column" gap="5">
+        <img
+          src={logo}
+          alt="Simpletodo app Logo"
+          className="w-[44px] h-[44px]"
+        />
+        <Flex className="flex-1" justify="between" direction="column">
+          <Flex direction="column" gap="5" pt="3">
+            <Tooltip content={`${currentProjectTitle} notes`}>
+              <IconButton size="4" variant="ghost" onClick={onToggleExpansion}>
+                <BackpackIcon width="18" height="18" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip content="Search notes (Ctrl or ⌘ + K)">
+              <IconButton size="4" variant="ghost" onClick={openSearch}>
+                <MagnifyingGlassIcon width="18" height="18" />
+              </IconButton>
+            </Tooltip>
+          </Flex>
+          <Flex direction="column" gap="5" py="2" pb="3">
+            {/* <Tooltip content="Settings">
+              <IconButton variant="ghost">
+                <GearIcon width="18" height="18" />
+              </IconButton>
+            </Tooltip> */}
+            <Tooltip content="Theme">
+              <ThemeToggle />
+            </Tooltip>
+          </Flex>
         </Flex>
       </Flex>
     </Flex>

@@ -11,6 +11,18 @@ body {
   outline-offset: 1px;
 }
 
+:root {
+  --text-editor-untitled-color: rgba(55, 53, 47, 0.15);
+}
+
+.dark {
+  --text-editor-untitled-color: rgb(55, 55, 55);
+}
+
+.app-region {
+  app-region: drag;
+}
+
 /* 3 grid column layout*/
 .layout {
   display: grid;
@@ -20,6 +32,7 @@ body {
   transition: 300ms;
   overflow: hidden;
   flex: 1;
+  background-color: var(--gray-3);
 }
 
 .layout.projects-expanded {
@@ -61,14 +74,6 @@ body {
 
 .projects-view-list-item:hover .action-menu {
   visibility: inherit;
-}
-
-:root {
-  --text-editor-untitled-color: rgba(55, 53, 47, 0.15);
-}
-
-.dark {
-  --text-editor-untitled-color: rgb(55, 55, 55);
 }
 
 .note-title {

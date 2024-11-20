@@ -48,6 +48,8 @@ const ApplyRadixTheme = ({ children }: { children: React.ReactNode }) => {
     <Theme
       panelBackground="solid"
       appearance={appearance as ThemeOptions['appearance']}
+      radius="medium"
+      accentColor="gray"
     >
       {children}
     </Theme>

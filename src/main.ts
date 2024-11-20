@@ -23,6 +23,9 @@ const createWindow = () => {
     height: 600,
     minHeight: 500,
     minWidth: 550,
+    titleBarStyle: 'hidden',
+    // expose window controlls in Windows/Linux
+    ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
 
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

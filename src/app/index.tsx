@@ -56,8 +56,9 @@ const App = () => {
           {!fullScreen ? (
             <>
               <Flex gap="2">
-                {projectsExpanded && <ProjectsView />}
-                <Separator orientation="vertical" size="4" />
+                {projectsExpanded && (
+                  <ProjectsView onToggleExpansion={onToggleProjectsView} />
+                )}
               </Flex>
               <NotesList onToggleFullScreen={onToggleFullScreen} />
             </>
