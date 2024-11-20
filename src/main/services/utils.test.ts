@@ -1,37 +1,36 @@
-import { generateColumnsSetStatement } from './utils'
+import { describe, expect, test } from 'vitest'
+import {
+  generateColumnsSetStatement,
+  generateDeletedStatement,
+  generateIsNullOrDefinedStatement,
+} from './utils'
 
 describe('DB: utils', () => {
-  describe('generateColumnsSetStatement', () => {
-    it('returns correct update statement and values for input object fields', () => {
-      const fields = {
-        name: 'some-name',
-        day: 'Monday',
-      }
+  test('generateColumnsSetStatement: returns correct update statement and values for input object fields', () => {
+    const fields = {
+      name: 'some-name',
+      day: 'Monday',
+      completed: true,
+    }
 
-      expect(generateColumnsSetStatement(fields)).toEqual({
-        statement: 'name = $1, day = $2',
-        values: ['some-name', 'Monday'],
-      })
-    })
+    expect(generateColumnsSetStatement(fields)).toEqual(
+      'name = @name, day = @day, completed = @completed'
+    )
+  })
 
-    it('returns correct field value when it is a boolean type field', () => {
-      const fields = {
-        name: 'some-name',
-        day: 'Monday',
-        completed: true,
-      }
+  test('generateIsNullOrDefinedStatement: return is null or defined where condition statement', () => {
+    expect(generateIsNullOrDefinedStatement('name', 'some value')).toBe(
+      'name = @name'
+    )
 
-      expect(generateColumnsSetStatement(fields)).toEqual({
-        statement: 'name = $1, day = $2, completed = $3',
-        values: ['some-name', 'Monday', 1],
-      })
+    expect(generateIsNullOrDefinedStatement('name', undefined)).toBe(
+      'name is NULL'
+    )
+  })
 
-      expect(
-        generateColumnsSetStatement({ ...fields, completed: false })
-      ).toEqual({
-        statement: 'name = $1, day = $2, completed = $3',
-        values: ['some-name', 'Monday', 0],
-      })
-    })
+  test('generateDeletedStatement: generate deleted where statement', () => {
+    expect(generateDeletedStatement(true)).toBe('deleted = 1')
+    expect(generateDeletedStatement(false)).toBe('deleted != 1')
+    expect(generateDeletedStatement()).toBe('deleted != 1')
   })
 })

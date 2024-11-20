@@ -48,7 +48,6 @@ type TextEditorProps = {
   className?: string
   content?: string
   noteId: ID
-  isSubNote?: boolean
   editable?: boolean
   onChange?: (value: string) => void
 }
@@ -60,7 +59,6 @@ export const TextEditor = ({
   editable,
   onChange,
   className,
-  isSubNote,
 }: TextEditorProps) => {
   const [manageLink, setManageLink] = React.useState<ManageLink>({
     linkUrl: '',
@@ -71,7 +69,7 @@ export const TextEditor = ({
   const CustomDocument = useMemo(
     () =>
       Document.extend({
-        content: isSubNote ? 'taskList' : 'heading taskList',
+        content: 'heading taskList',
       }),
     []
   )

@@ -28,6 +28,8 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
     return html ? hasCompletedTodos(html) : false
   })
   const id = note?.id
+  const isSubNote = !note?.parentNoteId
+
   return (
     <Flex p="4" direction="column" style={{ background: 'var(--accent-2)' }}>
       <Flex justify="between">
@@ -48,7 +50,7 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
               onClick={() => {
                 createSubNote(note?.id)
               }}
-              disabled={!hasCompletedTodo || isTrashNotesSelected}
+              disabled={isSubNote || !hasCompletedTodo || isTrashNotesSelected}
             >
               <CardStackIcon width="18" height="18" />
             </IconButton>
@@ -60,6 +62,7 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
               onClick={() => {
                 isTrashNotesSelected ? setOpen(true) : deleteNote(id)
               }}
+              disabled={!id}
             >
               <TrashIcon width="18" height="18" />
             </IconButton>

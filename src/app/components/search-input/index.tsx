@@ -62,8 +62,8 @@ const SearchInput = ({ open, onOpenChange }: SearchInputProps) => {
     await updateUserData('recentSearches', newRecentSearches)
   }
 
-  const handleSelectedSearch = (id: ID, subNoteId?: ID) => {
-    selectNoteItem(id, subNoteId)
+  const handleSelectedSearch = (id: ID, isSubNote: boolean) => {
+    selectNoteItem(id, isSubNote)
     onOpenChange(false)
   }
 
@@ -119,11 +119,7 @@ const SearchInput = ({ open, onOpenChange }: SearchInputProps) => {
                     key={result.id}
                     className="flex-col"
                     onSelect={() => {
-                      // if it is a subnote, select the parent note
-                      handleSelectedSearch(
-                        result.parentNoteId || result.id,
-                        result.parentNoteId ? result.id : undefined
-                      )
+                      handleSelectedSearch(result.id, !!result.parentNoteId)
                     }}
                   >
                     <Text

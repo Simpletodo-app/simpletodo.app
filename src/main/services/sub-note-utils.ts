@@ -17,12 +17,14 @@ export const createSubNoteFlow = (noteId: ID) => {
 
   const createSubNoteTransaction = db.transaction((noteId: ID) => {
     const note = notesService.getById(noteId)
+    const subNotesCount = notesService.getSubNotesCount(noteId)
     if (!note) {
       return
     }
 
     const { checkedHtmlContent, uncheckedHtmlContent } = extractItems(
-      note.htmlContent
+      note.htmlContent,
+      subNotesCount
     )
 
     // create a new note
@@ -37,7 +39,7 @@ export const createSubNoteFlow = (noteId: ID) => {
       htmlContent: checkedHtmlContent,
     })
     // update current note and other notes pointing to it to be a subnote of the new note
-    notesService.update(
+    const oldNote = notesService.update(
       note.id,
       {
         parentNoteId: newNote.id,
@@ -46,7 +48,7 @@ export const createSubNoteFlow = (noteId: ID) => {
       'OR parentNoteId = @id'
     )
 
-    return newNote
+    return { newNote, oldNote }
   })
 
   return createSubNoteTransaction(noteId)

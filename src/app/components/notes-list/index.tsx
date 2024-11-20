@@ -10,12 +10,13 @@ import {
   Heading,
 } from '@radix-ui/themes'
 import NoteListItem from './note-list-item'
-import { fetchNotes, notes$ } from '../../store/notesV2'
+import { fetchNotes, notes$, toggleViewSubNotes } from '../../store/notesV2'
 
 import { getProjectFromId, projects$ } from '../../store/projects'
 import { useUserData } from '../user-data-provider'
 import { SideNavIcon } from '../noteV2/SideNavIcon'
 import NewNoteListIconButton from './new-note-list-icon-button'
+import { CardStackIcon } from '@radix-ui/react-icons'
 
 type NotesListProps = {
   onToggleFullScreen: () => void
@@ -47,6 +48,11 @@ const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
             {currentProjectTitle}
           </Heading>
           <Flex gap="4">
+            <Tooltip content="Toggle past completed tasks">
+              <IconButton variant="ghost" onClick={() => toggleViewSubNotes()}>
+                <CardStackIcon width="18" height="18" />
+              </IconButton>
+            </Tooltip>
             <NewNoteListIconButton />
             <Tooltip content="Hide todo lists">
               <IconButton variant="ghost" onClick={onToggleFullScreen}>

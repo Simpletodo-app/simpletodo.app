@@ -5,8 +5,19 @@ import {
   ObservableComputed,
   observe,
 } from '@legendapp/state'
-import { ID, IDField, Note, SearchResult } from '../../common/types'
-import { getNewModelId, isNewModelId, toIdAndIndexMap } from './utils'
+import {
+  ID,
+  IDField,
+  Note,
+  NoteListItem,
+  SearchResult,
+} from '../../common/types'
+import {
+  getNewModelId,
+  isNewModelId,
+  organizeNotesByParent,
+  toIdAndIndexMap,
+} from './utils'
 import debounce from 'lodash/debounce'
 import { UNTITLED_NOTE_TITLE } from '../../common/config'
 import pick from 'lodash/pick'
@@ -22,22 +33,14 @@ import {
   highlightTitle,
 } from '../components/search-input/utils'
 
-export type NoteListItem = Pick<
-  Note,
-  'id' | 'title' | 'projectId' | 'createdAt' | 'hasSubNotes'
->
 const FIELDS_TO_BE_FETCHED: Array<keyof NoteListItem> = [
   'id',
   'title',
   'projectId',
   'createdAt',
   'hasSubNotes',
+  'parentNoteId',
 ]
-
-export type SubNoteListItem = Pick<
-  Note,
-  'id' | 'title' | 'htmlContent' | 'createdAt'
->
 
 export type SearchResultItem = SearchResult & {
   projectTitle?: string
@@ -48,7 +51,7 @@ export type SearchResultItem = SearchResult & {
 type NotesStore = {
   notes: NoteListItem[]
   isFetching: boolean
-  lastNoteId: ObservableComputed<IDField['id'] | undefined>
+  firstNoteId: IDField['id'] | undefined
   _notesIdIndexMap: ObservableComputed<Map<IDField['id'], Index>>
 
   selectedNoteId: ID
@@ -60,22 +63,20 @@ type NotesStore = {
 
   canCreateNewNote: ObservableComputed<boolean>
 
-  selectedNoteSubNotes: Array<SubNoteListItem>
-  // open sub note by id when the note is loaded and sub notes are fetched
-  // see SubNotes.tsx for usage
-  openSubNoteById: ID | undefined
-  toggleExpandAllSubNotes?: boolean
-
   searchResults: SearchResultItem[]
+
+  /**
+   * If `all` is passed, show all sub notes
+   * If an ID is passed, show only that sub note
+   * If undefined, show no sub notes
+   */
+  viewSubNotes?: 'all' | ID | undefined
 }
 
 export const notes$: ObservableObject<NotesStore> = observable({
   notes: [] as NoteListItem[],
   isFetching: false,
-  lastNoteId: computed(() => {
-    const length = notes$.notes.length
-    return notes$.notes[length - 1]?.id.get()
-  }),
+  firstNoteId: undefined,
   _notesIdIndexMap: computed(() => {
     return toIdAndIndexMap(notes$.notes.get())
   }),
@@ -99,11 +100,8 @@ export const notes$: ObservableObject<NotesStore> = observable({
     return !hasEmptyNote
   }),
 
-  selectedNoteSubNotes: [] as Note[],
-  openSubNoteById: undefined,
-  toggleExpandAllSubNotes: false,
-
   searchResults: [] as SearchResultItem[],
+  viewSubNotes: undefined,
 })
 
 const sanitizeProjectId = (projectId: ID | undefined) => {
@@ -133,12 +131,20 @@ observe(notes$.selectedNoteId, ({ value: id }) => {
   }
 })
 
+observe(notes$.notes, ({ value: notes }) => {
+  notes$.firstNoteId.set(notes[0]?.id)
+})
+
 /**
  * UI handlers
  */
-export const selectNoteItem = (id: ID, openSubNoteIdOnLoad?: ID) => {
+export const selectNoteItem = (id: ID, isASubNote?: boolean) => {
   notes$.selectedNoteId.set(id)
-  notes$.openSubNoteById.set(openSubNoteIdOnLoad)
+  // in case you are selecting a sub note when the sub notes are not visible
+  // we show the sub note in the list view
+  if (isASubNote) {
+    notes$.viewSubNotes.set(id)
+  }
 
   const fn = async () => {
     await window.electron.store.set('lastOpenedNoteId', id)
@@ -160,10 +166,6 @@ export const getSelectedNoteIndex = () => {
   return map.get(selectedNoteId)
 }
 
-export const toggleExpandAllSubNotes = () => {
-  notes$.toggleExpandAllSubNotes.set(!notes$.toggleExpandAllSubNotes.peek())
-}
-
 export const createEmptyNote = async () => {
   if (
     !notes$.canCreateNewNote.peek() ||
@@ -178,6 +180,20 @@ export const createEmptyNote = async () => {
   notes$.notes.unshift(getDummyEmptyNote(id) as NoteListItem)
 
   selectNoteItem(id)
+}
+
+export const toggleViewSubNotes = (subNoteId?: ID) => {
+  if (subNoteId) {
+    notes$.viewSubNotes.set(subNoteId)
+    return
+  }
+
+  if (notes$.viewSubNotes.peek() === 'all') {
+    notes$.viewSubNotes.set(undefined)
+    return
+  } else {
+    notes$.viewSubNotes.set('all')
+  }
 }
 /**
  * end UI handlers
@@ -257,7 +273,8 @@ export const fetchNotes = async (
         deleted: isTrashNotesProjectId(projectId),
       }
     )
-    notes$.notes.set(notes)
+
+    notes$.notes.set(organizeNotesByParent(notes))
 
     // after fetching notes, select the passed
     // default selected note id or use the first note
@@ -285,10 +302,16 @@ export const fetchNotes = async (
 export const deleteNote = async (id: ID, permanently?: boolean) => {
   console.log('deleting note for id:', id)
   try {
-    const note = notes$.notes.peek().find((note) => note.id === id)
+    const notes = notes$.notes.peek()
+    const note = notes.find((note) => note.id === id)
     await window.electron.services.notes.deleteById(id, permanently)
     const index = getNoteIdIndex(id)
-    notes$.notes.splice(index, 1)
+
+    const subNotesCount = notes.filter(
+      (note) => note.parentNoteId === id
+    ).length
+
+    notes$.notes.splice(index, 1 + subNotesCount)
 
     if (notes$.selectedNoteId.get() === id) {
       selectNoteItem(notes$.notes[0]?.id.get())
@@ -303,12 +326,21 @@ export const deleteNote = async (id: ID, permanently?: boolean) => {
 export const restoreNote = async (id: ID) => {
   console.log('restoring note for id:', id)
   try {
-    const note = notes$.notes.peek().find((note) => note.id === id)
-    await window.electron.services.notes.update(id, { deleted: 0 })
+    const notes = notes$.notes.peek()
+    const note = notes.find((note) => note.id === id)
+    await window.electron.services.notes.update(
+      id,
+      { deleted: 0 },
+      'OR parentNoteId = @id'
+    )
     const index = getNoteIdIndex(id)
 
-    // remove from trash notes list
-    notes$.notes.splice(index, 1)
+    const subNotesCount = notes.filter(
+      (note) => note.parentNoteId === id
+    ).length
+
+    // remove from trash notes list and sub notes
+    notes$.notes.splice(index, 1 + subNotesCount)
 
     if (notes$.selectedNoteId.get() === id) {
       selectNoteItem(notes$.notes[0]?.id.get())
@@ -328,12 +360,12 @@ export const createSubNote = async (noteId: ID) => {
   console.log('creating sub note for id:', noteId)
   const index = getNoteIdIndex(noteId)
   try {
-    const newNote = await window.electron.services.notes.triggerSubNoteCreation(
-      noteId
-    )
+    const { newNote, oldNote } =
+      await window.electron.services.notes.triggerSubNoteCreation(noteId)
 
     // update notes list to use the new note in place of the old note
     notes$.notes[index].set(newNote)
+    notes$.notes.splice(index + 1, 0, oldNote)
     selectNoteItem(newNote.id)
   } catch (err) {
     console.error(err)
@@ -348,38 +380,6 @@ export const fetchNote = async (id: ID) => {
   try {
     const note = await window.electron.services.notes.getById(id)
     notes$.activeNote.set(note)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export const fetchSubNotes = async (id: ID) => {
-  if (isNewModelId(id)) {
-    notes$.selectedNoteSubNotes.set([])
-    return
-  }
-  console.log('fetching sub notes for id:', id)
-  try {
-    const notes = await window.electron.services.notes.getSubNotes(id, [
-      'id',
-      'htmlContent',
-      'title',
-      'createdAt',
-    ])
-    notes$.selectedNoteSubNotes.set(notes)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export const deleteSubNote = async (id: ID) => {
-  console.log('deleting sub note for id:', id)
-  try {
-    await window.electron.services.notes.deleteById(id)
-    const index = notes$.selectedNoteSubNotes
-      .peek()
-      .findIndex((item) => item.id === id)
-    notes$.selectedNoteSubNotes.splice(index, 1)
   } catch (err) {
     console.error(err)
   }

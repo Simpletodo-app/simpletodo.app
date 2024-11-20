@@ -49,9 +49,7 @@ export default class NotesService extends DBService {
     const stmt = this.getDB().prepare(
       `SELECT ${fields.join(',')} FROM notes WHERE ${generateDeletedStatement(
         deleted
-      )} AND parentNoteId IS NULL ${
-        projectId ? 'AND projectId=@projectId' : ''
-      } ORDER BY createdAt DESC`
+      )} ${projectId ? 'AND projectId=@projectId' : ''} ORDER BY createdAt DESC`
     )
 
     return stmt.all({ projectId }) as Note[]
@@ -65,6 +63,14 @@ export default class NotesService extends DBService {
     )
 
     return stmt.all({ noteId }) as Note[]
+  }
+
+  getSubNotesCount(noteId: ID) {
+    const stmt = this.getDB().prepare(
+      `SELECT COUNT(*) as count FROM notes WHERE deleted != 1 AND parentNoteId = @noteId`
+    )
+    const result = stmt.get({ noteId }) as { count: number }
+    return result.count
   }
 
   getById(id: ID) {
@@ -113,15 +119,29 @@ export default class NotesService extends DBService {
     return this.getById(id)
   }
 
+  /**
+   * Soft delete a note and all its sub notes if any
+   * @param id
+   * @param permanently
+   * @returns
+   */
   deleteById(id: ID, permanently = false) {
     if (permanently) {
       return this.permanentlyDeleteById(id)
     }
-    return this.update(id, { deleted: 1 })
+
+    return this.update(id, { deleted: 1 }, 'OR parentNoteId = @id')
   }
 
+  /**
+   * Permanently delete a note and all its sub notes
+   * @param id
+   * @returns
+   */
   permanentlyDeleteById(id: ID) {
-    const stm = this.getDB().prepare('DELETE FROM notes WHERE id = @id')
+    const stm = this.getDB().prepare(
+      'DELETE FROM notes WHERE id = @id OR parentNoteId = @id'
+    )
     return stm.run({ id })
   }
 
@@ -132,7 +152,7 @@ export default class NotesService extends DBService {
     return stmt.all({ query: `%${query}%` }) as Note[]
   }
 
-  triggerSubNoteCreation(id: ID): Note {
+  triggerSubNoteCreation(id: ID) {
     return createSubNoteFlow(id)
   }
 }
