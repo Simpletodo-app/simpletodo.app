@@ -12,11 +12,7 @@ body {
 }
 
 :root {
-  --text-editor-untitled-color: rgba(55, 53, 47, 0.15);
-}
-
-.dark {
-  --text-editor-untitled-color: rgb(55, 55, 55);
+  --text-editor-untitled-color: var(--gray-8);
 }
 
 .app-region {
@@ -27,7 +23,7 @@ body {
 .layout {
   display: grid;
   grid-template-columns: 5px 300px 1fr;
-  grid-gap: 10px;
+  grid-gap: 2px;
   min-height: 100vh;
   transition: 300ms;
   overflow: hidden;

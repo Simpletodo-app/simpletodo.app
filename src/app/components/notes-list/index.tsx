@@ -3,7 +3,6 @@ import { For, useObserve, useSelector } from '@legendapp/state/react'
 
 import {
   Flex,
-  Separator,
   IconButton,
   Tooltip,
   ScrollArea,
@@ -49,7 +48,7 @@ const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
         py="4"
         gap="2"
       >
-        <Flex>
+        <Flex pr="2">
           <Heading weight="medium" size="3" className="app-region flex-1">
             {currentProjectTitle}
           </Heading>
@@ -72,7 +71,7 @@ const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
           className="notes-list-scroll-area"
           style={{ height: '90vh' }}
         >
-          <Flex direction="column" gap="1">
+          <Flex direction="column" gap="1" px="2">
             <For each={notes$.notes}>
               {(item) => {
                 return <NoteListItem note$={item} />

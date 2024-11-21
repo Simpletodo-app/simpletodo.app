@@ -47,7 +47,7 @@ const NoteV2 = ({ onToggleFullScreen, fullScreen }: NoteV2Props) => {
 
       {selectedNoteId && (
         <ScrollArea>
-          <Box py="4" pb="9" pr="2" className="note-layout">
+          <Box py="4" pl="4" pb="9" pr="2" className="note-layout">
             <TextEditor
               noteId={note?.id}
               content={note?.htmlContent || ''}

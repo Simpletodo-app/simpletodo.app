@@ -58,7 +58,7 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
         }
       >
         {/* TODO(theo): Delete this and use css to handle this */}
-        {!hideSeparator && !isSubNote && <Separator size="4" />}
+        {/* {!hideSeparator && !isSubNote && <Separator size="4" />} */}
         <ItemContextMenu
           onDelete={() =>
             isTrashNotesSelected ? setOpen(true) : deleteNote(id)
@@ -85,6 +85,7 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
                 align="left"
                 size="2"
                 as="div"
+                weight="medium"
               >
                 {note$.title.get()}
               </Text>
