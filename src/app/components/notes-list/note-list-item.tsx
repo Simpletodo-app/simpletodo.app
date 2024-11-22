@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Flex, Box, Text, Separator, Badge } from '@radix-ui/themes'
+import { Flex, Box, Text, Badge } from '@radix-ui/themes'
 import { CardStackIcon } from '@radix-ui/react-icons'
 import { cn } from '../../../app/utils'
 import {
@@ -26,7 +26,6 @@ type NoteListItemProps = {
 const NoteListItem = ({ note$ }: NoteListItemProps) => {
   const [open, setOpen] = useState(false)
   const id = note$.id.peek()
-  const hideSeparator = notes$.firstNoteId.get() === id
   const isActive = notes$.selectedNoteId.get() === id
   const belongsToAProject = !!note$.projectId.peek()
   const selectedProjectId = projects$.selectedProjectId.get()
@@ -57,8 +56,6 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
             : cn(hideSubNote && 'hidden', isSubNote && 'pl-4')
         }
       >
-        {/* TODO(theo): Delete this and use css to handle this */}
-        {/* {!hideSeparator && !isSubNote && <Separator size="4" />} */}
         <ItemContextMenu
           onDelete={() =>
             isTrashNotesSelected ? setOpen(true) : deleteNote(id)
@@ -74,7 +71,7 @@ const NoteListItem = ({ note$ }: NoteListItemProps) => {
             className={cn(
               'notes-list-item',
               'p-2 rounded-lg w-full',
-              !isSubNote && 'my-2',
+              !isSubNote && 'my-1',
               isActive && 'active'
             )}
             asChild

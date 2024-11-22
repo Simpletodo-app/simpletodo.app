@@ -31,7 +31,7 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
   const isSubNote = !note?.parentNoteId
 
   return (
-    <Flex className="pl-24" pt="2" pr="4" direction="column">
+    <Flex className="pl-24 pt-2.5" pr="4" direction="column">
       <Flex>
         <Flex gap="4" style={{ visibility: fullScreen ? 'unset' : 'hidden' }}>
           <NewNoteListIconButton />
