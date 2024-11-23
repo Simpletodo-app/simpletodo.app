@@ -28,7 +28,7 @@ const NoteBar = ({ onToggleFullScreen, fullScreen }: NoteBarProps) => {
     return html ? hasCompletedTodos(html) : false
   })
   const id = note?.id
-  const isSubNote = !note?.parentNoteId
+  const isSubNote = !!note?.parentNoteId
 
   return (
     <Flex className="pl-24 pt-2.5" pr="4" direction="column">
