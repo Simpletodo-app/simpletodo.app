@@ -9,9 +9,17 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement>((_, ref) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger ref={ref}>
-        <IconButton variant="ghost">
-          <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <IconButton size="4" variant="ghost">
+          <SunIcon
+            width="18"
+            height="18"
+            className=" rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+          />
+          <MoonIcon
+            width="18"
+            height="18"
+            className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+          />
         </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>

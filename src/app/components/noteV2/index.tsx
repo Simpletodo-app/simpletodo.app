@@ -37,7 +37,7 @@ const NoteV2 = ({ onToggleFullScreen, fullScreen }: NoteV2Props) => {
   }, [])
 
   return (
-    <div className="note-container">
+    <div className="note-container" style={{ background: 'var(--gray-5)' }}>
       <NoteBar
         onToggleFullScreen={onToggleFullScreen}
         fullScreen={fullScreen}
@@ -47,7 +47,7 @@ const NoteV2 = ({ onToggleFullScreen, fullScreen }: NoteV2Props) => {
 
       {selectedNoteId && (
         <ScrollArea>
-          <Box py="4" pb="9" pr="2" className="note-layout">
+          <Box py="4" pl="4" pb="9" pr="2" className="note-layout">
             <TextEditor
               noteId={note?.id}
               content={note?.htmlContent || ''}

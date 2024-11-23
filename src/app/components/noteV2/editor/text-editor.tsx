@@ -104,6 +104,7 @@ export const TextEditor = ({
         openOnClick: false,
         autolink: true,
         HTMLAttributes: {
+          'data-accent-color': 'indigo',
           class: 'rt-Text rt-reset rt-Link rt-underline-auto',
         },
       }),

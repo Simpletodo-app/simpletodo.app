@@ -80,12 +80,21 @@ export const LinkEditingMenu = (props: LinkEditingMenu) => {
       />
 
       {isNewLink ? (
-        <IconButton size="1" onClick={handleOnNewClick} disabled={!linkUrl}>
+        <IconButton
+          variant="ghost"
+          size="1"
+          mr="1"
+          onClick={handleOnNewClick}
+          disabled={!linkUrl}
+        >
           <CheckIcon />
         </IconButton>
       ) : (
         <IconButton
+          ml="1"
+          mr="1"
           size="1"
+          variant="ghost"
           color="crimson"
           onClick={() => {
             editor.chain().focus().unsetLink().run()

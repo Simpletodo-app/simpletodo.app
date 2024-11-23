@@ -27,6 +27,8 @@ const ProjectListItem = ({ project$ }: ProjectListItemProps) => {
   const title = project$.title.get()
   const isTrashProjectId = isTrashNotesProjectId(id)
 
+  const color = isTrashProjectId ? 'crimson' : isActive ? 'indigo' : undefined
+
   return (
     <>
       <Button
@@ -35,7 +37,7 @@ const ProjectListItem = ({ project$ }: ProjectListItemProps) => {
         className={cn('projects-view-list-item', isActive && 'active')}
         asChild
         onClick={() => selectProject(id)}
-        color={isTrashProjectId ? 'crimson' : undefined}
+        color={color}
       >
         <li>
           {title}

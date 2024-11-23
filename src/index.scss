@@ -11,15 +11,24 @@ body {
   outline-offset: 1px;
 }
 
+:root {
+  --text-editor-untitled-color: var(--gray-8);
+}
+
+.app-region {
+  app-region: drag;
+}
+
 /* 3 grid column layout*/
 .layout {
   display: grid;
   grid-template-columns: 5px 300px 1fr;
-  grid-gap: 10px;
+  grid-gap: 2px;
   min-height: 100vh;
   transition: 300ms;
   overflow: hidden;
   flex: 1;
+  background-color: var(--gray-3);
 }
 
 .layout.projects-expanded {
@@ -61,14 +70,6 @@ body {
 
 .projects-view-list-item:hover .action-menu {
   visibility: inherit;
-}
-
-:root {
-  --text-editor-untitled-color: rgba(55, 53, 47, 0.15);
-}
-
-.dark {
-  --text-editor-untitled-color: rgb(55, 55, 55);
 }
 
 .note-title {
@@ -263,55 +264,10 @@ body {
   .active {
     background: var(--accent-a3);
   }
-  .link-toolbar-button {
-    background-color: var(--accent-9);
-    color: var(--accent-9-contrast);
-  }
 }
 
 .notes-list-scroll-area .rt-ScrollAreaScrollbar {
   right: -5px !important;
-}
-
-.todo-item {
-  transition: all 200ms;
-  &[data-state='open'] {
-    box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
-      0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
-      0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086),
-      0 100px 80px rgba(0, 0, 0, 0.12);
-    padding-left: 5px;
-  }
-}
-
-.title-separator {
-  overflow: hidden;
-  text-align: center;
-
-  &::before,
-  &::after {
-    background-color: var(--gray-a6);
-    content: '';
-    display: inline-block;
-    height: 1px;
-    position: relative;
-    vertical-align: middle;
-    width: 50%;
-  }
-
-  &::before {
-    right: 0.5em;
-    margin-left: -50%;
-  }
-
-  &::after {
-    left: 0.5em;
-    margin-right: -50%;
-  }
-}
-
-.subnote {
-  border-color: var(--gray-a6);
 }
 
 .truncate-note-list-item-title {
@@ -324,38 +280,6 @@ body {
 .tippy-box {
   background-color: transparent !important;
   box-shadow: none !important;
-}
-
-.ai-input {
-  background-color: var(--color-panel-solid);
-  outline: 0;
-  overflow: auto;
-  padding: 6px;
-  border-radius: 3px;
-  padding: 6px;
-  cursor: text;
-
-  textarea {
-    word-break: break-word;
-    white-space: pre-wrap;
-    background: transparent;
-
-    font-size: var(--font-size-2);
-    letter-spacing: var(--letter-spacing-2);
-
-    border-radius: 0;
-    border: none;
-    resize: none;
-    width: 100%;
-
-    &:focus {
-      outline: none;
-    }
-
-    &::placeholder {
-      color: var(--text-editor-untitled-color);
-    }
-  }
 }
 
 .search-input-dialog {
