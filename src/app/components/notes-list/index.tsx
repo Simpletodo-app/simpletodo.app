@@ -48,9 +48,9 @@ const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
         py="4"
         gap="2"
       >
-        <Flex pr="2">
-          <Heading weight="medium" size="3" className="app-region flex-1">
-            {currentProjectTitle}
+        <Flex pr="2" align="start">
+          <Heading weight="medium" size="3" className="app-region flex-1 ">
+            <span className="truncate-to-one-line">{currentProjectTitle}</span>
           </Heading>
           <Flex gap="4" align="center">
             <Tooltip content="Toggle past completed tasks">
@@ -71,7 +71,7 @@ const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
           className="notes-list-scroll-area"
           style={{ height: '90vh' }}
         >
-          <Flex direction="column" gap="1" px="2">
+          <Flex direction="column" gap="1" pr="2">
             <For each={notes$.notes}>
               {(item) => {
                 return <NoteListItem note$={item} />

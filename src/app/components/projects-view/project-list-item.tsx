@@ -40,7 +40,9 @@ const ProjectListItem = ({ project$ }: ProjectListItemProps) => {
         color={color}
       >
         <li>
-          {title}
+          <span className="truncate-to-one-line" title={title}>
+            {title}
+          </span>
           <Flex gap="2" align="center">
             {!isAllNotesProjectId(id) && !isTrashProjectId && (
               <ItemActionMenu

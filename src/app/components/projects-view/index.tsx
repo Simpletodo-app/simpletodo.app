@@ -23,7 +23,7 @@ const ProjectsView = ({ onToggleExpansion }: ProjectsViewProps) => {
     <Flex
       direction="column"
       justify="between"
-      className="min-w-[220px]"
+      className="min-w-[220px] max-w-[220px]"
       px="2"
       pr="3"
       pt="2"
