@@ -29,7 +29,6 @@ export const parseHtmlToNoteContent = (htmlContent: string) => {
   }
 }
 
-// TODO: if it's a task with sub tasks and none of the sub tasks are checked, don't enable the button
 export const hasCompletedTodos = (htmlContent: string): boolean => {
   const $ = cheerio.load(htmlContent)
   return $('input[type=checkbox]:checked').length > 0

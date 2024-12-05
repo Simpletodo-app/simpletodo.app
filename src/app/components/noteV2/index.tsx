@@ -37,7 +37,7 @@ const NoteV2 = ({ onToggleFullScreen, fullScreen }: NoteV2Props) => {
   }, [])
 
   return (
-    <div className="note-container" style={{ background: 'var(--gray-5)' }}>
+    <div className="note-container" style={{ background: 'var(--accent-1)' }}>
       <NoteBar
         onToggleFullScreen={onToggleFullScreen}
         fullScreen={fullScreen}
