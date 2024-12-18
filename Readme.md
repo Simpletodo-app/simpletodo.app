@@ -73,7 +73,7 @@ Then,
 - copy 512x512 png to `appicons/icon.png`
 - copy icon.icns, icon.ico from mac and win respectively to `appicons/` directory
 
-### Signing and Notarizing the app
+### Signing and Notarizing the app manually
 
 Follow the instruction in this blog post to create a certificate
 https://www.peterkoraca.com/blog/how-to-package-code-sign-notarize-and-share-an-electronjs-app-for-mac-os-in-2023
