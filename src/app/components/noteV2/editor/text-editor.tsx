@@ -122,6 +122,10 @@ export const TextEditor = ({
   // see https://github.com/ueberdosis/tiptap/issues/491#issuecomment-1317578507
   const resetContentAndState = (newContent: string) => {
     if (!editor) return
+
+    // clear before setting content, there's a bug if you don't clear first
+    // some of the task items attribute will inherit value from the previous content
+    editor.commands.clearContent()
     editor.commands.setContent(newContent)
 
     const newEditorState = EditorState.create({
@@ -130,6 +134,8 @@ export const TextEditor = ({
       schema: editor.state.schema,
     })
     editor.view.updateState(newEditorState)
+
+    editor.commands.focus('end')
   }
 
   // for performance and experience, we should only reset content
