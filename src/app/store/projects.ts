@@ -128,7 +128,17 @@ export const saveNewProject = async (
 
   try {
     const project = await window.electron.services.projects.create(title)
-    projects$.projects.push({ ...project, noteCount: 0 })
+
+    const trashProject = getProjectFromId(trashNotesProject.id).get()
+    if (!trashProject) {
+      projects$.projects.push({ ...project, noteCount: 0 })
+    } else {
+      projects$.projects.splice(projects$.projects.length - 1, 0, {
+        ...project,
+        noteCount: 0,
+      })
+    }
+
     if (shouldSelectProjectAfterCreation) {
       selectProject(project.id)
     }
