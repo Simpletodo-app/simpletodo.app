@@ -29,6 +29,7 @@ const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
       return getProjectFromId(projectId).title.get()
     }
   })
+  const viewingSubNotes = useSelector(() => notes$.viewSubNotes.get())
 
   useObserve(() => {
     const selectedProjectId = projects$.selectedProjectId.get()
@@ -54,7 +55,11 @@ const NotesList = ({ onToggleFullScreen }: NotesListProps) => {
           </Heading>
           <Flex gap="4" align="center">
             <Tooltip content="Toggle past completed tasks">
-              <IconButton variant="ghost" onClick={() => toggleViewSubNotes()}>
+              <IconButton
+                color={viewingSubNotes ? 'indigo' : undefined}
+                variant="ghost"
+                onClick={() => toggleViewSubNotes()}
+              >
                 <CardStackIcon width="18" height="18" />
               </IconButton>
             </Tooltip>
