@@ -25,12 +25,12 @@ class DBService {
     if (db) {
       return db
     }
-    const pathName = `${
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      IS_DEV ? '.' : app.getPath('userData')
-    }/data/simpletodoapp.db`
-    db = Database(pathName, { verbose: console.log, fileMustExist: false })
+    const prodPath = `${app.getPath('userData')}/simpletodoapp.db`
+    const devPath = './data/simpletodoapp.db'
+    db = Database(IS_DEV ? devPath : prodPath, {
+      verbose: console.log,
+      fileMustExist: false,
+    })
 
     db.exec(createSchemas)
     this.runAlterTableQuery(addParentNoteIdOct132024)
