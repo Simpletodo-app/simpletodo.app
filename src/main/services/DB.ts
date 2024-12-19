@@ -28,7 +28,7 @@ class DBService {
     const pathName = `${
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      IS_DEV ? '.' : app.getAppPath('userData')
+      IS_DEV ? '.' : app.getPath('userData')
     }/data/simpletodoapp.db`
     db = Database(pathName, { verbose: console.log, fileMustExist: false })
 
