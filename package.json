@@ -2,7 +2,7 @@
   "name": "simpletodoapp",
   "productName": "Simpletodo",
   "repository": "https://github.com/simpletodo-app/simpletodo.app",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A Simpletodo app. Redefine productivity. Keep tasks in check, move completed items, and organize projects—all while staying focused on what’s next.",
   "main": ".vite/build/main.js",
   "scripts": {
