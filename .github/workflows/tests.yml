@@ -1,0 +1,22 @@
+name: Build, Lint and Test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build
+        run: yarn make
+      - name: Linting
+        run: yarn lint --quiet
+      - name: Testing
+        run: yarn test
