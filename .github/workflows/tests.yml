@@ -1,4 +1,4 @@
-name: Build, Lint and Test
+name: Lint and Test
 
 on: [push]
 
@@ -14,8 +14,6 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies
         run: yarn --frozen-lockfile
-      - name: Build
-        run: yarn make
       - name: Linting
         run: yarn lint --quiet
       - name: Testing
