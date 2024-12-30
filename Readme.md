@@ -20,7 +20,7 @@ Things to be done, not ordered by priority:
 
 - [ ] Support signed Windows build (too expensive to get a signing certificate)
 - [ ] Syncing todo across multiple devices
-- [ ] AI to help go through opened todo list, indicating which task it can help with. E.g. creating a calendar invite or composing an email
+- [ ] Installable AI extensions panel to help go through opened todo list, indicating which task it can help with. E.g. creating a calendar invite extension or composing an email extension
 
 ## Contribution
 
