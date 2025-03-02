@@ -6,6 +6,7 @@ import Document from '@tiptap/extension-document'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import Code from '@tiptap/extension-code'
+import Typography from '@tiptap/extension-typography'
 
 import Link from '@tiptap/extension-link'
 import TextFormatting, { ManageLink } from './text-formatting'
@@ -88,6 +89,7 @@ export const TextEditor = ({
           }
         },
       }),
+      Typography,
       CustomTaskList.configure({
         HTMLAttributes: {},
       }),
