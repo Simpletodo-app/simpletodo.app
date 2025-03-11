@@ -278,20 +278,22 @@ export const fetchNotes = async (
 
     // after fetching notes, select the passed
     // default selected note id or use the first note
-    const isValidDefaultSelectedNoteId = Boolean(
-      defaultSelectedNoteId &&
-        notes.find((note) => note.id === defaultSelectedNoteId)
-    )
-    const toBeSelectedNoteId = isValidDefaultSelectedNoteId
-      ? defaultSelectedNoteId
-      : notes[0]?.id
+    const toBeSelectedNote = defaultSelectedNoteId
+      ? notes.find((note) => note.id === defaultSelectedNoteId)
+      : notes[0]
+
+    const toBeSelectedNoteId = toBeSelectedNote?.id || notes[0]?.id
 
     // if no note is found, create an empty note
     if (!toBeSelectedNoteId) {
       return createEmptyNote()
     }
 
-    selectNoteItem(toBeSelectedNoteId)
+    const isSubNote = Boolean(toBeSelectedNote?.parentNoteId)
+
+    selectNoteItem(
+      isSubNote ? toBeSelectedNote?.parentNoteId : toBeSelectedNoteId
+    )
   } catch (err) {
     console.error(err)
   } finally {
